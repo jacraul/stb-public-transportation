@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Buy Ticket - Ticketing System{% endblock %}
+{% block content %}
+  <h2>Buy Ticket</h2>
+  <form method="POST" action="{{ url_for('buy_ticket') }}">
+    <label for="ticket_type">Ticket Type:</label>
+    <select id="ticket_type" name="ticket_type" required onchange="updatePrice()">
+      <option value="" disabled selected>Select type</option>
+      <option value="single">Single (1 trip)</option>
+      <option value="daily">Daily (24h)</option>
+      <option value="monthly">Monthly (30 days)</option>
+    </select>
+    <div style="margin:8px 0;">
+      <span>Price: </span>
+      <span id="ticket_price">-</span> RON
+    </div>
+    <input type="hidden" id="price" name="price" value="">
+    <button class="btn" type="submit" id="purchase_btn" disabled>Purchase Ticket</button>
+  </form>
+<script>
+  const prices = {
+    single: 5,
+    daily: 10,
+    monthly: 40
+  };
+  const balance = {{ travel_card.balance|tojson }};
+
+  function updatePrice() {
+    const type = document.getElementById('ticket_type').value;
+    const price = prices[type] || 0;
+    document.getElementById('ticket_price').textContent = price ? price.toFixed(2) : '-';
+    document.getElementById('price').value = price;
+    // Disable button if balance is too low or no type selected
+    document.getElementById('purchase_btn').disabled = !(price && balance >= price);
+  }
+  document.getElementById('ticket_type').addEventListener('change', updatePrice);
+</script>
+{% endblock %}

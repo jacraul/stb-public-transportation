@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Admin - Journeys{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Journeys</h2>
+  <table>
+    <tr>
+      <th>Journey ID</th>
+      <th>User Email</th>
+      <th>Origin</th>
+      <th>Destination</th>
+      <th>Estimated Time</th>
+    </tr>
+    {% for journey in journeys %}
+      <tr>
+        <td>{{ journey.journeyId }}</td>
+        <td>
+          {% set user = users|selectattr('userId', 'equalto', journey.user_id)|first %}
+          {{ user.email if user else '' }}
+        </td>
+        <td>{{ journey.origin }}</td>
+        <td>{{ journey.destination }}</td>
+        <td>{{ journey.estimatedTime }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

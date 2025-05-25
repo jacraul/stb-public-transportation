@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block nav %}{% endblock %}  <!-- Hide user menu bar for admin -->
+{% block content %}
+  <h2>Admin Dashboard</h2>
+  <div style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom:32px;">
+    <a href="{{ url_for('admin_users') }}" class="btn" style="min-width:160px;">Users</a>
+    <a href="{{ url_for('admin_travelcards') }}" class="btn" style="min-width:160px;">Travel Cards</a>
+    <a href="{{ url_for('admin_tickets') }}" class="btn" style="min-width:160px;">Tickets</a>
+    <a href="{{ url_for('admin_payments') }}" class="btn" style="min-width:160px;">Payments</a>
+    <a href="{{ url_for('admin_journeys') }}" class="btn" style="min-width:160px;">Journeys</a>
+    <a href="{{ url_for('admin_routes') }}" class="btn" style="min-width:160px;">Routes & Schedules</a>
+  </div>
+{% endblock %}

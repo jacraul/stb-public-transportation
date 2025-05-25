@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Public Transportation Ticketing System{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header>
+    <h1>{% block header %}STB{% endblock %}</h1>
+  <nav>
+    {% if session.get('user_id') and not session.get('is_admin') %}
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('topup') }}">Top-Up</a>
+      <a href="{{ url_for('route_search') }}">Route Search</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    {% elif not session.get('user_id') %}
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+  {% if session.get('is_admin') %}
+      <a href="{{ url_for('admin_dashboard') }}" style="color:#fff; margin-right:18px;">Home</a>
+      <a href="{{ url_for('validate_ticket') }}" style="color:#fff; margin-right:18px;">Validate</a>
+      <a href="{{ url_for('admin_routes') }}" style="color:#fff; margin-right:18px;">Routes</a>
+      <a href="{{ url_for('admin_users') }}" style="color:#fff; margin-right:18px;">Users</a>
+      <a href="{{ url_for('admin_travelcards') }}" style="color:#fff; margin-right:18px;">Travel Cards</a>
+      <a href="{{ url_for('admin_tickets') }}" style="color:#fff; margin-right:18px;">Tickets</a>
+      <a href="{{ url_for('admin_payments') }}" style="color:#fff; margin-right:18px;">Payments</a>
+      <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+  {% endif %}
+  </nav>
+  </header>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

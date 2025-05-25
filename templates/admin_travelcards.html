@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin - Travel Cards{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Travel Cards</h2>
+  <form method="post" style="margin-bottom:16px;">
+    <input type="email" name="search_email" placeholder="Search by user email" value="{{ search_email }}">
+    <button type="submit" class="btn">Search</button>
+  </form>
+  <table>
+    <tr>
+      <th>Card ID</th>
+      <th>Balance</th>
+      <th>User Email</th>
+    </tr>
+    {% for card in travelcards %}
+      <tr>
+        <td>{{ card.cardId }}</td>
+        <td>{{ '%.2f'|format(card.balance) }}</td>
+        <td>
+          {% set user = users|selectattr('travel_card_id', 'equalto', card.cardId)|first %}
+          {{ user.email if user else '' }}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <h3>Top-Up for User</h3>
+  <form method="post" action="{{ url_for('admin_topup') }}">
+    <input type="email" name="email" placeholder="User email" required>
+    <input type="number" name="amount" placeholder="Amount" step="0.01" required>
+    <button type="submit" class="btn">Top-Up</button>
+  </form>
+{% endblock %}

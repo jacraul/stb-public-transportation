@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Validate Ticket{% endblock %}
+{% block content %}
+  <h2>Validate Ticket</h2>
+  <form method="post" style="margin-bottom:24px;">
+    <input type="text" name="ticket_number" placeholder="Enter Ticket Number" required>
+    <button type="submit" class="btn">Validate</button>
+  </form>
+  {% if validation_result %}
+    <div style="max-width:420px; margin:auto; background:{{ 'linear-gradient(135deg, #38ef7d 0%, #11998e 100%)' if validation_result.success else '#e74c3c' }}; color:#fff; border-radius:16px; box-shadow:0 2px 8px #0002; padding:24px 20px; text-align:center;">
+      <div style="font-size:1.2em; font-weight:bold; margin-bottom:12px;">
+        {{ validation_result.message }}
+      </div>
+      {% if validation_result.success %}
+        <div style="font-size:1em; margin-bottom:6px;">
+          <b>User:</b> {{ validation_result.user.name }}
+        </div>
+        <div style="font-size:1em; margin-bottom:6px;">
+          <b>Ticket Number:</b> {{ validation_result.ticket.ticketId }}
+        </div>
+        <div style="font-size:1em;">
+          <b>Travel Card:</b> {{ validation_result.travel_card.cardId if validation_result.travel_card else 'N/A' }}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

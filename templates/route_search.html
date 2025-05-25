@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Route Search - Ticketing System{% endblock %}
+{% block content %}
+  <h2>Route Search</h2>
+  <form method="get" action="{{ url_for('route_search') }}" style="margin-bottom:20px;">
+    <label for="mode">Transport Mode:</label>
+    <select name="mode" id="mode">
+      <option value="">All</option>
+      {% for mode in all_modes %}
+        <option value="{{ mode }}" {% if selected_mode == mode %}selected{% endif %}>{{ mode|capitalize }}</option>
+      {% endfor %}
+    </select>
+    <label for="line">Line:</label>
+    <select name="line" id="line">
+      <option value="">All</option>
+      {% for line in all_lines %}
+        <option value="{{ line }}" {% if selected_line == line %}selected{% endif %}>{{ line }}</option>
+      {% endfor %}
+    </select>
+    <label for="station">Station:</label>
+    <select name="station" id="station">
+      <option value="">All</option>
+      {% for station in all_stations %}
+        <option value="{{ station }}" {% if selected_station == station %}selected{% endif %}>{{ station }}</option>
+      {% endfor %}
+    </select>
+    <label for="time">Time:</label>
+    <input type="time" name="time" id="time" value="{{ selected_time or '' }}">
+    <button type="submit" class="btn">Filter</button>
+    <a href="{{ url_for('route_search') }}" class="btn" style="margin-left:10px;">Reset Filtering</a>
+  </form>
+
+  <h3>Available Routes:</h3>
+<div style="display:flex; flex-direction:column; gap:18px;">
+  {% for route in routes %}
+    <div style="background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius:16px; color:#222; box-shadow:0 2px 8px #0002; min-width:240px; max-width:700px; margin-bottom:0; padding:20px 24px; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:1.5em; font-weight:bold; color:#137547; margin-bottom:8px;">
+          Line {{ route.route_id }}
+        </div>
+        <div style="font-size:1.1em; margin-bottom:6px;">
+          <b>Type:</b> {{ route.transport_type|capitalize }}
+        </div>
+        <div style="margin-bottom:6px;">
+          <b>Start:</b> {{ route.start_station }}<br>
+          <b>End:</b> {{ route.end_station }}
+        </div>
+        <div style="margin-bottom:6px;">
+          <b>Station:</b> {{ route.station_name }}
+        </div>
+        <div style="margin-bottom:6px;">
+          <b>Arrival:</b> {{ route.arrival_time or '-' }}<br>
+          <b>Departure:</b> {{ route.departure_time or '-' }}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% if routes|length == 0 %}
+    <div style="padding:24px; color:#888;">No routes found.</div>
+  {% endif %}
+</div>
+{% endblock %}

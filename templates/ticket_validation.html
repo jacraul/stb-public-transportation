@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Ticket Validation - Admin{% endblock %}
+{% block content %}
+  <h2>Ticket Validation</h2>
+  <form method="POST" action="{{ url_for('validate_ticket') }}">
+    <label for="ticket_number">Enter Ticket Number:</label>
+    <input type="text" id="ticket_number" name="ticket_number" required>
+    <button class="btn" type="submit">Validate Ticket</button>
+  </form>
+{% endblock %}

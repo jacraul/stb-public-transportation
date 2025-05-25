@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h2>Welcome, {{ user.name }}!</h2>
+
+  <!-- Travel Card Display (unchanged) -->
+  <div style="width:320px; height:180px; background:green; border-radius:16px; color:white; position:relative; margin-bottom:24px; box-shadow:0 2px 8px #0002;">
+    <div style="position:absolute; top:16px; right:24px; font-size:2em; font-weight:bold; letter-spacing:2px;">STB</div>
+    <div style="position:absolute; left:24px; bottom:40px; font-size:1.2em; letter-spacing:1px;">
+      {{ travel_card.cardId }}
+    </div>
+    <div style="position:absolute; left:24px; bottom:16px; font-size:1em;">
+      {{ user.name }}
+    </div>
+    <div style="position:absolute; right:24px; bottom:16px; font-size:1em;">
+      Balance: {{ '%.2f'|format(travel_card.balance) }} RON
+    </div>
+  </div>
+    <hr>
+
+ <h3>Your Scheduled Train Journeys</h3>
+{% if journey_details %}
+  <div style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:24px;">
+    {% for detail in journey_details %}
+      <div style="min-width:260px; max-width:320px; flex:1 1 260px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:16px; color:#fff; box-shadow:0 2px 8px #0002; margin-bottom:12px; padding:22px 20px; position:relative;">
+        <div style="font-size:1.3em; font-weight:bold; margin-bottom:8px;">
+          {{ detail.journey.origin }} <span style="font-size:1.2em;">&#8594;</span> {{ detail.journey.destination }}
+        </div>
+        <div style="font-size:1em; margin-bottom:6px;">
+          <b>Departure Time:</b>
+          {{ detail.departure_time if detail.departure_time else 'N/A' }}
+        </div>
+        <div style="font-size:0.95em; margin-bottom:6px;">
+          <b>Stations:</b>
+          {% for station in detail.stations %}
+            {{ station.station_name }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </div>
+        <div style="font-size:0.95em;">
+          <b>Journey ID:</b> {{ detail.journey.journeyId }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+    <a href="{{ url_for('schedule_journey') }}" class="btn">Schedule Train Journey</a><br>
+    <hr>
+
+
+  <h3>Your Tickets</h3>
+  {% if tickets %}
+    <div style="display:flex; flex-wrap:wrap; gap:18px;">
+      {% for ticket in tickets %}
+        {% set color =
+          'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' if ticket.type == 'single' else
+          'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' if ticket.type == 'daily' else
+          'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)'
+        %}
+        <div style="min-width:220px; max-width:260px; flex:1 1 220px; background:{{ color }}; border-radius:16px; color:#fff; box-shadow:0 2px 8px #0002; margin-bottom:12px; padding:20px 18px; position:relative;">
+          <div style="font-size:2em; font-weight:bold; letter-spacing:2px; margin-bottom:8px;">
+            {% if ticket.type == 'single' %}SINGLE{% elif ticket.type == 'daily' %}24H{% else %}30 DAYS{% endif %}
+          </div>
+          <div style="font-size:1.1em; margin-bottom:8px;">
+            {% if ticket.type == 'single' %}
+              Single use
+            {% elif ticket.type == 'daily' and ticket.valid and ticket.expiry %}
+              <b>Since:</b> {{ ticket.purchase_time.strftime('%Y-%m-%d %H:%M') }}<br>
+              <b>Until:</b> {{ ticket.expiry.strftime('%Y-%m-%d %H:%M') }}
+            {% elif ticket.type == 'monthly' and ticket.valid and ticket.expiry %}
+              <b>Since:</b> {{ ticket.purchase_time.strftime('%Y-%m-%d %H:%M') }}<br>
+              <b>Until:</b> {{ ticket.expiry.strftime('%Y-%m-%d %H:%M') }}
+            {% endif %}
+          </div>
+          <div style="font-size:1em; margin-bottom:6px;">
+            Ticket No: <b>{{ ticket.ticketId }}</b>
+          </div>
+          <div style="font-size:1.2em; font-weight:bold;">
+            {{ '%.2f'|format(ticket.price) }} RON
+          </div>
+          {% if ticket.valid and ticket.expiry and ticket.type != 'single' %}
+            <div style="font-size:0.95em; margin-top:8px;">
+              <span id="countdown-{{ loop.index0 }}"></span>
+              <script>
+                (function() {
+                  const expiry = new Date("{{ ticket.expiry.isoformat() }}Z");
+                  const countdownElem = document.getElementById("countdown-{{ loop.index0 }}");
+                  function updateCountdown() {
+                    const now = new Date();
+                    let diff = Math.floor((expiry - now) / 1000);
+                    if (diff < 0) {
+                      countdownElem.textContent = "Expired";
+                      return;
+                    }
+                    const days = Math.floor(diff / 86400);
+                    diff %= 86400;
+                    const hours = Math.floor(diff / 3600);
+                    diff %= 3600;
+                    const minutes = Math.floor(diff / 60);
+                    const seconds = diff % 60;
+                    countdownElem.textContent = "Time left: " +
+                      (days ? days + 'd ' : '') +
+                      (hours ? hours + 'h ' : '') +
+                      (minutes ? minutes + 'm ' : '') +
+                      seconds + 's';
+                    setTimeout(updateCountdown, 1000);
+                  }
+                  updateCountdown();
+                })();
+              </script>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>You have no tickets.</p>
+  {% endif %}
+  <form action="{{ url_for('buy_ticket') }}" method="get" style="margin-top:24px;">
+    <button class="btn" type="submit">Buy a Ticket</button>
+  </form>
+
+
+{% endblock %}

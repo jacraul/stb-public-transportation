@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin - Payments{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Payments</h2>
+  <form method="post" style="margin-bottom:16px;">
+    <input type="email" name="search_email" placeholder="Search by user email" value="{{ search_email }}">
+    <button type="submit" class="btn">Search</button>
+  </form>
+  <table>
+    <tr>
+      <th>Payment ID</th>
+      <th>User Email</th>
+      <th>Amount</th>
+      <th>Date</th>
+    </tr>
+    {% for payment in payments %}
+      <tr>
+        <td>{{ payment.paymentId }}</td>
+        <td>
+          {% set user = users|selectattr('userId', 'equalto', payment.user_id)|first %}
+          {{ user.email if user else '' }}
+        </td>
+        <td>{{ '%.2f'|format(payment.amount) }}</td>
+        <td>{{ payment.date }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

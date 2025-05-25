@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Schedule Train Journey{% endblock %}
+{% block content %}
+  <h2>Schedule Train Journey</h2>
+  <form method="post">
+    <label for="route_id">Train Route:</label>
+    <select name="route_id" required onchange="this.form.submit()">
+      <option value="">Select a route</option>
+      {% for route in train_routes %}
+        <option value="{{ route.route_id }}" {% if stations and route.route_id == request.form.get('route_id') %}selected{% endif %}>
+          {{ route.route_id }}: {{ route.start_station }} → {{ route.end_station }}
+        </option>
+      {% endfor %}
+    </select><br>
+    {% if stations %}
+      <label for="origin">Origin:</label>
+      <select name="origin" required>
+        {% for station in stations %}
+          <option value="{{ station.station_name }}">{{ station.station_name }}</option>
+        {% endfor %}
+      </select><br>
+      <label for="destination">Destination:</label>
+      <select name="destination" required>
+        {% for station in stations %}
+          <option value="{{ station.station_name }}">{{ station.station_name }}</option>
+        {% endfor %}
+      </select><br>
+      <button type="submit" class="btn">Schedule Journey</button>
+    {% endif %}
+  </form>
+{% endblock %}

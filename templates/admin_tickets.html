@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Admin - Tickets{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Tickets</h2>
+  <form method="post" style="margin-bottom:16px;">
+    <input type="email" name="search_email" placeholder="Search by user email" value="{{ search_email }}">
+    <button type="submit" class="btn">Search</button>
+  </form>
+  <table>
+    <tr>
+      <th>Ticket ID</th>
+      <th>User Email</th>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Valid</th>
+      <th>Purchase Time</th>
+      <th>Expiry</th>
+    </tr>
+    {% for ticket in tickets %}
+      <tr>
+        <td>{{ ticket.ticketId }}</td>
+        <td>
+          {% set user = users|selectattr('userId', 'equalto', ticket.user_id)|first %}
+          {{ user.email if user else '' }}
+        </td>
+        <td>{{ ticket.type }}</td>
+        <td>{{ '%.2f'|format(ticket.price) }}</td>
+        <td>{{ 'Yes' if ticket.valid else 'No' }}</td>
+        <td>{{ ticket.purchase_time }}</td>
+        <td>{{ ticket.expiry or '-' }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <h3>Buy Ticket for User</h3>
+  <form method="post" action="{{ url_for('admin_buy_ticket') }}">
+    <input type="email" name="email" placeholder="User email" required>
+    <select name="ticket_type" required>
+      <option value="single">Single</option>
+      <option value="daily">24H</option>
+      <option value="monthly">30 Days</option>
+    </select>
+    <input type="number" name="price" placeholder="Price" step="0.01" required>
+    <button type="submit" class="btn">Buy Ticket</button>
+  </form>
+{% endblock %}

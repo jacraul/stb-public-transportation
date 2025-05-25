@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Edit Stop{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Edit Stop for Route {{ stop['route_id'] }} (Order {{ stop['station_order'] }})</h2>
+  <form method="post">
+    <label>Station Name:</label>
+    <input type="text" name="station_name" value="{{ stop['station_name'] }}" required><br>
+    <label>Arrival Time:</label>
+    <input type="time" name="arrival_time" value="{{ stop['arrival_time'] }}"><br>
+    <label>Departure Time:</label>
+    <input type="time" name="departure_time" value="{{ stop['departure_time'] }}"><br>
+    <button type="submit" class="btn">Save Changes</button>
+    <a href="{{ url_for('admin_routes') }}" class="btn">Cancel</a>
+  </form>
+{% endblock %}

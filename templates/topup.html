@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Top-Up Travel Card - Ticketing System{% endblock %}
+{% block content %}
+  <h2>Top-Up Your Travel Card</h2>
+  <form method="POST" action="{{ url_for('topup') }}">
+    <label for="amount">Amount:</label>
+    <input type="number" step="0.01" id="amount" name="amount" required>
+    <button class="btn" type="submit">Top-Up</button>
+  </form>
+{% endblock %}

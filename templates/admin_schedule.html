@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Manage Schedule - Admin{% endblock %}
+{% block content %}
+  <h2>Manage Schedule</h2>
+  <form method="POST" action="{{ url_for('admin_schedule') }}">
+    <label for="schedule_data">Update Schedule Data (JSON or text):</label>
+    <textarea id="schedule_data" name="schedule_data" rows="5">{{ schedule_data }}</textarea>
+    <button class="btn" type="submit">Update Schedule</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Admin - Routes & Schedules{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+  <h2>Routes & Schedules</h2>
+
+  <!-- Add New Route -->
+  <h3>Add New Route</h3>
+  <form method="post" action="{{ url_for('admin_add_route') }}" style="margin-bottom:24px;">
+    <input type="text" name="route_id" placeholder="Route ID" required>
+    <input type="text" name="transport_type" placeholder="Transport Type" required>
+    <input type="text" name="start_station" placeholder="Start Station" required>
+    <input type="text" name="end_station" placeholder="End Station" required>
+    <button type="submit" class="btn">Add Route</button>
+  </form>
+
+  <!-- All Routes Table -->
+  <h3>All Routes</h3>
+  <table>
+    <tr>
+      <th>Route ID</th>
+      <th>Type</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Actions</th>
+    </tr>
+    {% for route in routes %}
+      <tr>
+        <td>{{ route.route_id }}</td>
+        <td>{{ route.transport_type }}</td>
+        <td>{{ route.start_station }}</td>
+        <td>{{ route.end_station }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_delete_route', route_id=route.route_id) }}" style="display:inline;">
+            <button type="submit" class="btn" onclick="return confirm('Delete this route?')">Delete</button>
+          </form>
+          <a href="{{ url_for('admin_edit_route', route_id=route.route_id) }}" class="btn">Edit</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <!-- Add Stop to Route -->
+  <h3>Add Stop to Route</h3>
+  <form method="post" action="{{ url_for('admin_add_stop') }}" style="margin-bottom:24px;">
+    <input type="text" name="route_id" placeholder="Route ID" required>
+    <input type="text" name="station_name" placeholder="Station Name" required>
+    <input type="time" name="arrival_time" placeholder="Arrival Time">
+    <input type="time" name="departure_time" placeholder="Departure Time">
+    <input type="number" name="station_order" placeholder="Station Order" required>
+    <button type="submit" class="btn">Add Stop</button>
+  </form>
+
+  <!-- Stops & Schedules Table -->
+  <h3>Stops & Schedules</h3>
+  <table>
+    <tr>
+      <th>Route ID</th>
+      <th>Station Name</th>
+      <th>Arrival Time</th>
+      <th>Departure Time</th>
+      <th>Actions</th>
+    </tr>
+    {% for stop in stops %}
+      <tr>
+        <td>{{ stop.route_id }}</td>
+        <td>{{ stop.station_name }}</td>
+        <td>{{ stop.arrival_time }}</td>
+        <td>{{ stop.departure_time }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_delete_stop', route_id=stop['route_id'], station_order=stop['station_order']) }}" style="display:inline;">
+            <button type="submit" class="btn" onclick="return confirm('Delete this stop?')">Delete</button>
+          </form>
+          <a href="{{ url_for('admin_edit_stop', route_id=stop['route_id'], station_order=stop['station_order']) }}" class="btn">Edit</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
